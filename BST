@@ -62,17 +62,48 @@ void dfs(Node* root){
     cout << root->data << " ";
     dfs(root->right);
 }
-int Min(Node* root){
-    if(root==NULL)
-    return -1;
-    else if(root->left==NULL)
-    return root->data;
-    Min(root->left);
+Node* Min(Node* root){
+    while(root->left != NULL) root = root->left;
+	return root;
 }
 int HeightOfaTree(Node* root){
     if(root==NULL)
     return -1;
     return ((max(HeightOfaTree(root->left),HeightOfaTree(root->right))+1));
+}
+
+Node* Delete(Node* root, int x){
+    if(root==NULL)
+    return root;
+    else if(x<root->data)
+    root->left=Delete(root->left,x);
+    else if(x>root->data)
+    root->right=Delete(root->right,x);
+    else{
+        if(root->left==NULL && root->right==NULL)
+        {
+            delete root;
+            root=NULL;
+        }
+        else if(root->left==NULL)
+        {
+            Node* temp=root;
+            root=root->right;
+            delete temp;
+        }
+        else if(root->right==NULL)
+        {
+            Node* temp=root;
+            root=root->left;
+            delete temp;
+        }
+        else{
+            Node* temp=Min(root->right);
+            root->data=temp->data;
+            root->right=Delete(root->right,temp->data);
+        }
+    }
+    return root;
 }
 int main(){
     Node* root=NULL;
@@ -84,11 +115,16 @@ int main(){
         root=Insert(root,x);
     }
 	dfs(root);
-	int number;
-	cin >> number;
-	if(search(root,number) == true) cout << "Found\n";
-	else cout << "Not Found\n";
-	cout << Min(root);
-	cout << endl << HeightOfaTree(root) << endl;
-	levelOrder(root);
+	//int number;
+	//cin >> number;
+	//if(search(root,number) == true) cout << "Found\n";
+	//else cout << "Not Found\n";
+	//cout << Min(root);
+	//cout << endl << HeightOfaTree(root) << endl;
+	//levelOrder(root);
+	cout << endl;
+	int x;
+	cin >> x;
+	root=Delete(root,x);
+	dfs(root);
 }
