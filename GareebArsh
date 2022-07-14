@@ -1,0 +1,105 @@
+#include <iostream>
+#include<stdlib.h>
+#include<stdio.h>
+using namespace std;
+
+struct node{
+	int value;
+	node* right;
+	node* left;
+};
+
+struct queue{
+    node* treenode;
+	queue* link;
+};
+
+queue* head=NULL;
+queue* tail=NULL;
+
+
+void push(node* x){
+	queue* temp=new queue();
+	temp->treenode=x;
+	temp->link=NULL;
+	if(head==NULL){
+		head=tail=temp;
+		return;
+	}
+	tail->link=temp;
+	tail=temp;
+}
+
+void Pop(){
+	queue* temp=head;
+	head=head->link;
+	free(temp);
+}
+
+bool IsEmpty(){
+	if(head==NULL)
+		return true;
+	return false;
+}
+node* Top(){
+	if(head!=NULL)
+	return (head->treenode);
+}
+
+node* getnode(int x){
+	node* temp=new node();
+	temp->value=x;
+	temp->right=NULL;
+	temp->left=NULL;
+	return temp;
+}
+
+node* insert(node* root,int x){
+	if(root==NULL)
+		root=getnode(x);
+	else if(x<=root->value)
+		root->left=insert(root->left,x);
+	else
+		root->right=insert(root->right,x);
+	return root;
+}
+
+void levelorder(node* root){
+	if(root==NULL)
+		return;
+	push(root);
+	while(head!=NULL){
+		node* temp=new node();
+		temp=Top();
+		cout << temp->value << " ";
+		if(temp->left!=NULL)
+			push(temp->left);
+		if(temp->right!=NULL)
+			push(temp->right);
+		Pop();
+	}
+}
+
+void dfs(node* root){
+    if(root==NULL)
+    return;
+    
+    dfs(root->left);
+    cout << root->value << " ";
+    dfs(root->right);
+}
+
+int main(){
+	node* root=NULL;
+	int n;
+	cin >> n;
+	while(n--){
+		int x;
+		cin >> x;
+		root=insert(root,x);
+	}
+	levelorder(root);
+
+}
+
+//Made By Arsh Singh
